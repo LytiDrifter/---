@@ -1,1 +1,8 @@
+import json
+from telegram import Update, ReplyKeyboardMarkup
+from telegram.ext import Application, ApplicationBuilder, CommandHandler, MessageHandler, filters, ContextTypes, CallbackContext
+from telegramtoken import *
+from viev import *
+from module import *
 
+# app.run_polling()
