@@ -1,8 +1,67 @@
-import json
-from telegram import Update, ReplyKeyboardMarkup
-from telegram.ext import Application, ApplicationBuilder, CommandHandler, MessageHandler, filters, ContextTypes, CallbackContext
-from telegramtoken import *
-from viev import *
-from module import *
+from telegram import Update
+from telegram.ext import ContextTypes, ConversationHandler, CommandHandler, MessageHandler, filters
 
-# app.run_polling()
+class Target:
+    def __init__(self, name, target, balance, function=None):
+        self.name = name
+        self.target = target
+        self.balance = balance
+        self.function = function if function is not None else []
+
+counts = {}
+GET_NAME, GET_SUM, GET_BALANCE, GET_FUNCTION = range(4)
+
+async def create(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text("📝 Введите название цели:")
+    return GET_NAME
+
+async def get_name(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    context.user_data["name"] = update.message.text
+    await update.message.reply_text("💰 Введите сумму цели:")
+    return GET_SUM
+
+async def get_sum(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    try:
+        context.user_data["sum"] = float(update.message.text)
+        await update.message.reply_text("🏦 Введите баланс:")
+        return GET_BALANCE
+    except ValueError:
+        await update.message.reply_text("❌ Введите число!")
+        return GET_SUM
+
+async def get_balance(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    try:
+        context.user_data["balance"] = float(update.message.text)
+        await update.message.reply_text("🔧 Введите функцию:")
+        return GET_FUNCTION
+    except ValueError:
+        await update.message.reply_text("❌ Введите число!")
+        return GET_BALANCE
+
+async def get_function(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    target = Target(
+        name=context.user_data["name"],
+        target=context.user_data["sum"],
+        balance=context.user_data["balance"],
+        function=update.message.text.split(",")
+    )
+    counts[target.name] = target
+    await update.message.reply_text(f"✅ Цель '{target.name}' создана!")
+    print(target.name)
+    print(target.target)
+    print(target.balance)
+    print(target.function)
+    print(counts[target.name])
+    return ConversationHandler.END
+
+async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text("🚫 Диалог отменён.")
+    context.user_data.clear()
+    return ConversationHandler.END
+
+
+def targetsshow():
+    showcount = 0
+    showcount = showcount + 1
+
+
