@@ -1,0 +1,8 @@
+from module import setup_handlers, run_bot
+#import logging
+
+#logging.basicConfig(level=logging.DEBUG)
+
+if __name__ == '__main__':
+    setup_handlers()
+    run_bot()
