@@ -1,13 +1,31 @@
-import json
-from telegram import Update, ReplyKeyboardMarkup
-from telegram.ext import Application, ApplicationBuilder, CommandHandler, MessageHandler, filters, ContextTypes, CallbackContext
-from telegramtoken import *
-from module import *
-from controller import *
+from telegram import Update
+from telegram.ext import ContextTypes
 
-app.add_handler(CommandHandler("start", mainmenu))
-app.add_handler(CommandHandler("create", create))
-app.add_handler(CommandHandler("arguments", argumentsshowa))
+async def mainmenu(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text(
+        "Добро пожаловать в бот-органайзер!\n"
+        "Доступные команды:\n"
+        "/create - создать цель\n"
+        "/view - просмотр целей\n"
+        "/arguments - справка по аргументам"
+    )
 
-
-app.run_polling()
+async def argumentsshow(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    messages = [
+        'Все аргументы пишутся без пробелов и через запятую.',
+        '"+" - оператор сложения.',
+        '"-" - оператор вычитания',
+        '"/" - оператор деления',
+        '"*" - оператор умножения',
+        'Чтобы задать периодичность действия, после числа, или выражения введите "e", его периодичность в цифрах и ниже представленные отрезки времени в виде операторов ниже представленными аргументами:',
+        '"d" - один день',
+        '"w" - одна неделя',
+        '"m" - один месяц',
+        '"y" - один год',
+        'Чтобы задать действие, начинающиеся с определённой даты, используйте аргумент "o".',
+        'Если вы хотите задать повторяющееся действие, начинающееся в определённую дату, напишите "o", а затем "e" и единицы измерения даты',
+        'Пример функции:'
+        '+72e1d,-54e2m',
+    ]
+    for msg in messages:
+        await update.message.reply_text(msg)
